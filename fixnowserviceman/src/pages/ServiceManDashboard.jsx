@@ -14,6 +14,7 @@ import {
   Trash2,
   Send,
   Filter,
+  Phone,
 } from "lucide-react";
 
 const ServicemanDashboard = () => {
@@ -41,6 +42,32 @@ const ServicemanDashboard = () => {
     },
   ]);
 
+  const [routineFilter, setRoutineFilter] = useState("today");
+  const [customDays, setCustomDays] = useState(7);
+
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  };
+
+  const getTomorrowDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split("T")[0];
+  };
+
+  const getDateRange = (days) => {
+    const today = new Date();
+    const endDate = new Date();
+    endDate.setDate(today.getDate() + days);
+    return {
+      start: today.toISOString().split("T")[0],
+      end: endDate.toISOString().split("T")[0],
+    };
+  };
+
+  const idCounter = useRef(1);
+
   const [myRoutine, setMyRoutine] = useState([
     {
       id: "TASK001",
@@ -48,7 +75,7 @@ const ServicemanDashboard = () => {
       userName: "Priya Shah",
       userPhone: "+91 98765 43212",
       location: "789, Green Valley, Piplod, Surat",
-      date: "2024-11-20",
+      date: getTodayDate(),
       time: "09:00 AM",
       status: "completed",
       basePrice: 350,
@@ -59,16 +86,51 @@ const ServicemanDashboard = () => {
       userName: "Vikram Singh",
       userPhone: "+91 98765 43215",
       location: "321, Tech Park, Vesu, Surat",
-      date: "2024-11-21",
+      date: getTodayDate(),
       time: "11:00 AM",
       status: "in-progress",
       basePrice: 550,
+    },
+    {
+      id: "TASK003",
+      serviceType: "AC Repair",
+      userName: "Amit Patel",
+      userPhone: "+91 98765 43216",
+      location: "456, Business Park, Vesu, Surat",
+      date: getTodayDate(),
+      time: "02:00 PM",
+      status: "upcoming",
+      basePrice: 500,
+    },
+    {
+      id: "TASK004",
+      serviceType: "Plumbing",
+      userName: "Rajesh Kumar",
+      userPhone: "+91 98765 43217",
+      location: "123, Shanti Nagar, Adajan, Surat",
+      date: getTomorrowDate(),
+      time: "10:00 AM",
+      status: "upcoming",
+      basePrice: 450,
+    },
+    {
+      id: "TASK005",
+      serviceType: "Carpenter",
+      userName: "Suresh Mehta",
+      userPhone: "+91 98765 43218",
+      location: "555, Royal Apartments, Athwa, Surat",
+      date: "2024-11-25",
+      time: "03:00 PM",
+      status: "upcoming",
+      basePrice: 600,
     },
   ]);
 
   const [billingTask, setBillingTask] = useState(null);
   const [extraProducts, setExtraProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({ name: "", price: "" });
+//   const [generatedBills, setGeneratedBills] = useState([]);
+//   const [billSendingStates, setBillSendingStates] = useState({});
 
   const [todayEarnings] = useState([
     {
@@ -92,7 +154,6 @@ const ServicemanDashboard = () => {
   ]);
 
   const [dateFilter, setDateFilter] = useState({ start: "", end: "" });
-  const taskIdRef = useRef(1);
 
   const menuItems = [
     { id: "requests", label: "Service Requests", icon: Briefcase },
@@ -102,24 +163,27 @@ const ServicemanDashboard = () => {
     { id: "history", label: "Earnings History", icon: History },
     { id: "profile", label: "Profile", icon: User },
   ];
+
   const handleAcceptRequest = (requestId) => {
     const request = serviceRequests.find((r) => r.id === requestId);
-    if (request) {
-      const newTask = {
-        id: `TASK${taskIdRef.current++}`,
-        serviceType: request.serviceType,
-        userName: request.userName,
-        userPhone: request.userPhone,
-        location: request.location,
-        date: request.preferredDate,
-        time: request.preferredTime,
-        status: "pending",
-        basePrice: 500,
-      };
-      setMyRoutine((prev) => [...prev, newTask]);
-      setServiceRequests((prev) => prev.filter((r) => r.id !== requestId));
-    }
+    if (!request) return;
+
+    const newTask = {
+      id: `TASK${idCounter.current++}`,
+      serviceType: request.serviceType,
+      userName: request.userName,
+      userPhone: request.userPhone,
+      location: request.location,
+      date: request.preferredDate,
+      time: request.preferredTime,
+      status: "upcoming",
+      basePrice: 500,
+    };
+
+    setMyRoutine((prev) => [...prev, newTask]);
+    setServiceRequests((prev) => prev.filter((r) => r.id !== requestId));
   };
+ 
 
   const handleRejectRequest = (requestId) => {
     setServiceRequests(serviceRequests.filter((r) => r.id !== requestId));
@@ -169,15 +233,65 @@ const ServicemanDashboard = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "pending":
-        return "bg-yellow-100 text-yellow-700";
+      case "upcoming":
+        return "bg-blue-100 text-blue-700 border-blue-300";
       case "in-progress":
-        return "bg-blue-100 text-blue-700";
+        return "bg-yellow-100 text-yellow-700 border-yellow-300";
       case "completed":
-        return "bg-green-100 text-green-700";
+        return "bg-green-100 text-green-700 border-green-300";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-gray-100 text-gray-700 border-gray-300";
     }
+  };
+
+  const handleStartService = (taskId) => {
+    setMyRoutine(
+      myRoutine.map((task) =>
+        task.id === taskId ? { ...task, status: "in-progress" } : task
+      )
+    );
+  };
+
+  const getFilteredRoutine = () => {
+    const today = getTodayDate();
+    const tomorrow = getTomorrowDate();
+
+    switch (routineFilter) {
+      case "today":
+        return myRoutine.filter((task) => task.date === today);
+
+      case "tomorrow":
+        return myRoutine.filter((task) => task.date === tomorrow);
+
+      case "week": {
+        const weekRange = getDateRange(7);
+        return myRoutine.filter(
+          (task) => task.date >= weekRange.start && task.date <= weekRange.end
+        );
+      }
+
+      case "month": {
+        const monthRange = getDateRange(30);
+        return myRoutine.filter(
+          (task) => task.date >= monthRange.start && task.date <= monthRange.end
+        );
+      }
+
+      case "custom": {
+        const customRange = getDateRange(customDays);
+        return myRoutine.filter(
+          (task) =>
+            task.date >= customRange.start && task.date <= customRange.end
+        );
+      }
+
+      default:
+        return myRoutine;
+    }
+  };
+
+  const isToday = (date) => {
+    return date === getTodayDate();
   };
 
   const renderContent = () => {
@@ -262,92 +376,229 @@ const ServicemanDashboard = () => {
         );
 
       case "routine":
+        { const filteredTasks = getFilteredRoutine();
         return (
           <div>
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
               My Routine
             </h2>
-            {myRoutine.length === 0 ? (
+
+            {/* Filter Buttons */}
+            <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+              <div className="flex flex-wrap gap-2 mb-4">
+                <button
+                  onClick={() => setRoutineFilter("today")}
+                  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                    routineFilter === "today"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                >
+                  Today's Tasks
+                </button>
+                <button
+                  onClick={() => setRoutineFilter("tomorrow")}
+                  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                    routineFilter === "tomorrow"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                >
+                  Tomorrow
+                </button>
+                <button
+                  onClick={() => setRoutineFilter("week")}
+                  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                    routineFilter === "week"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                >
+                  This Week
+                </button>
+                <button
+                  onClick={() => setRoutineFilter("month")}
+                  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                    routineFilter === "month"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                >
+                  This Month
+                </button>
+                <button
+                  onClick={() => setRoutineFilter("custom")}
+                  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                    routineFilter === "custom"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                >
+                  Custom
+                </button>
+              </div>
+
+              {/* Custom Days Input */}
+              {routineFilter === "custom" && (
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-semibold text-gray-700">
+                    Show next
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="365"
+                    value={customDays}
+                    onChange={(e) =>
+                      setCustomDays(parseInt(e.target.value) || 1)
+                    }
+                    className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                  <label className="text-sm font-semibold text-gray-700">
+                    days
+                  </label>
+                </div>
+              )}
+            </div>
+
+            {/* Task List */}
+            {filteredTasks.length === 0 ? (
               <div className="bg-white rounded-lg shadow-md p-6">
                 <div className="text-center py-12">
                   <Calendar size={64} className="mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-500">No scheduled tasks</p>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                    No Tasks Scheduled
+                  </h3>
+                  <p className="text-gray-500">
+                    {routineFilter === "today" &&
+                      "You don't have any tasks scheduled for today"}
+                    {routineFilter === "tomorrow" &&
+                      "You don't have any tasks scheduled for tomorrow"}
+                    {routineFilter === "week" &&
+                      "You don't have any tasks scheduled for this week"}
+                    {routineFilter === "month" &&
+                      "You don't have any tasks scheduled for this month"}
+                    {routineFilter === "custom" &&
+                      `You don't have any tasks scheduled for the next ${customDays} days`}
+                  </p>
                 </div>
               </div>
             ) : (
               <div className="space-y-4">
-                {myRoutine.map((task) => (
-                  <div
-                    key={task.id}
-                    className="bg-white rounded-lg shadow-md p-6"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="text-lg font-bold text-gray-800">
-                          {task.serviceType}
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          Task ID: {task.id}
-                        </p>
-                      </div>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                          task.status
-                        )}`}
-                      >
-                        {task.status.charAt(0).toUpperCase() +
-                          task.status.slice(1).replace("-", " ")}
-                      </span>
-                    </div>
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center gap-2 text-sm">
-                        <User size={16} className="text-gray-400" />
-                        <span className="text-gray-700">{task.userName}</span>
-                        <span className="text-gray-500">
-                          • {task.userPhone}
+                {filteredTasks.map((task) => {
+                  const taskIsToday = isToday(task.date);
+                  return (
+                    <div
+                      key={task.id}
+                      className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="text-lg font-bold text-gray-800">
+                            {task.serviceType}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            Task ID: {task.id}
+                          </p>
+                        </div>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(
+                            task.status
+                          )}`}
+                        >
+                          {task.status === "upcoming" && "Upcoming"}
+                          {task.status === "in-progress" && "In Progress"}
+                          {task.status === "completed" && "Completed"}
                         </span>
                       </div>
-                      <div className="flex items-start gap-2 text-sm">
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Calendar size={16} className="text-gray-400" />
+                          <span className="text-gray-700 font-semibold">
+                            {task.date}
+                            {taskIsToday && (
+                              <span className="text-blue-600 ml-2">
+                                (Today)
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Clock size={16} className="text-gray-400" />
+                          <span className="text-gray-700">{task.time}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <User size={16} className="text-gray-400" />
+                          <span className="text-gray-700">{task.userName}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Phone size={16} className="text-gray-400" />
+                          <span className="text-gray-600">
+                            {task.userPhone}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-2 text-sm mb-4 bg-gray-50 p-3 rounded-lg">
                         <MapPin size={16} className="text-gray-400 mt-0.5" />
                         <span className="text-gray-700">{task.location}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Clock size={16} className="text-gray-400" />
-                        <span className="text-gray-700">
-                          {task.date} at {task.time}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
+
+                      <div className="flex items-center gap-2 text-sm mb-4 pb-4 border-b border-gray-200">
                         <DollarSign size={16} className="text-gray-400" />
                         <span className="font-semibold text-gray-800">
                           Base Price: ₹{task.basePrice}
                         </span>
                       </div>
+
+                      {/* Action Buttons - Only for Today's Tasks */}
+                      {taskIsToday ? (
+                        <div className="space-y-2">
+                          {task.status === "upcoming" && (
+                            <button
+                              onClick={() => handleStartService(task.id)}
+                              className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                            >
+                              <Clock size={18} />
+                              Start Service
+                            </button>
+                          )}
+                          {task.status === "in-progress" && (
+                            <button
+                              onClick={() => handleMarkCompleted(task.id)}
+                              className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                            >
+                              <Check size={18} />
+                              Mark as Completed
+                            </button>
+                          )}
+                          {task.status === "completed" && (
+                            <button
+                              onClick={() => handleStartBilling(task)}
+                              className="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                            >
+                              <Receipt size={18} />
+                              Generate Bill
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 text-center">
+                          <p className="text-sm text-gray-600 font-medium">
+                            <Clock size={16} className="inline mr-2" />
+                            This task is scheduled for {task.date}. Actions will
+                            be available on the service date.
+                          </p>
+                        </div>
+                      )}
                     </div>
-                    {task.status === "in-progress" && (
-                      <button
-                        onClick={() => handleMarkCompleted(task.id)}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
-                      >
-                        <Check size={18} />
-                        Mark as Completed
-                      </button>
-                    )}
-                    {task.status === "completed" && (
-                      <button
-                        onClick={() => handleStartBilling(task)}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
-                      >
-                        <Receipt size={18} />
-                        Generate Bill
-                      </button>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
-        );
+        ); }
 
       case "billing":
         return (
@@ -695,7 +946,6 @@ const ServicemanDashboard = () => {
     }
   };
 
-
   return (
     <div className="min-h-screen bg-gray-100 flex">
       {/* Sidebar */}
@@ -731,4 +981,5 @@ const ServicemanDashboard = () => {
     </div>
   );
 };
+
 export default ServicemanDashboard;
