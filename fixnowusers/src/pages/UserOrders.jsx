@@ -40,7 +40,7 @@ const UserOrders = () => {
       servicemanExperience: "8 years",
       bookingDate: "2024-11-20",
       bookingTime: "10:00 AM",
-      address: "123, Shanti Nagar, Adajan, Surat - 395009",
+      address: "123, Shanti Nagar, Ahmedabad, Ahmedabad - 395009",
       price: 500,
       paymentStatus: "Paid",
       services: ["AC Repair", "AC Cleaning"],
@@ -57,7 +57,7 @@ const UserOrders = () => {
       servicemanExperience: "12 years",
       bookingDate: "2024-11-22",
       bookingTime: "02:00 PM",
-      address: "456, Business Park, Vesu, Surat - 395007",
+      address: "456, Business Park, Ahmedabad, Ahmedabad - 395007",
       price: 450,
       paymentStatus: "Pending",
       services: ["Pipe Repair", "Leak Fixing"],
@@ -76,7 +76,7 @@ const UserOrders = () => {
       bookingTime: "09:00 AM",
       completedDate: "2024-11-15",
       completedTime: "12:00 PM",
-      address: "789, Green Valley, Piplod, Surat - 395010",
+      address: "789, Green Valley, Ahmedabad, Ahmedabad - 395010",
       price: 350,
       paymentStatus: "Paid",
       services: ["Room Cleaning", "Kitchen Cleaning", "Bathroom Cleaning"],
@@ -98,7 +98,7 @@ const UserOrders = () => {
       bookingTime: "11:00 AM",
       completedDate: "2024-11-10",
       completedTime: "01:30 PM",
-      address: "321, Tech Park, Vesu, Surat - 395007",
+      address: "321, Tech Park, Ahmedabad, Ahmedabad - 395007",
       price: 550,
       paymentStatus: "Paid",
       services: ["Wiring", "Switch Replacement"],
@@ -118,7 +118,7 @@ const UserOrders = () => {
       bookingDate: "2024-11-18",
       bookingTime: "03:00 PM",
       cancelledDate: "2024-11-17",
-      address: "555, Royal Apartments, Athwa, Surat - 395001",
+      address: "555, Royal Apartments, Ahmedabad, Ahmedabad - 395001",
       price: 600,
       paymentStatus: "Refunded",
       services: ["Furniture Repair"],
@@ -367,12 +367,12 @@ const UserOrders = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-            <Link to="/"  >
-          <button className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-4">
-            <ArrowLeft size={20} />
-            <span className="font-medium">Back to Dashboard</span>
-          </button>
-            </Link>
+          <Link to="/">
+            <button className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-4">
+              <ArrowLeft size={20} />
+              <span className="font-medium">Back to Dashboard</span>
+            </button>
+          </Link>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
             Order History
           </h1>

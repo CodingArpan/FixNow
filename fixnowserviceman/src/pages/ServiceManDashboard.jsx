@@ -15,6 +15,9 @@ import {
   Send,
   Filter,
   Phone,
+  Edit,
+  Camera,
+  Save,
 } from "lucide-react";
 
 const ServicemanDashboard = () => {
@@ -25,7 +28,7 @@ const ServicemanDashboard = () => {
       serviceType: "AC Repair",
       userName: "Rajesh Kumar",
       userPhone: "+91 98765 43210",
-      location: "123, Shanti Nagar, Adajan, Surat",
+      location: "123, Shanti Nagar, Ahmedabad, Ahmedabad",
       preferredDate: "2024-11-25",
       preferredTime: "10:00 AM",
       status: "pending",
@@ -35,7 +38,7 @@ const ServicemanDashboard = () => {
       serviceType: "Plumbing",
       userName: "Amit Patel",
       userPhone: "+91 98765 43211",
-      location: "456, Business Park, Vesu, Surat",
+      location: "456, Business Park, Ahmedabad, Ahmedabad",
       preferredDate: "2024-11-26",
       preferredTime: "02:00 PM",
       status: "pending",
@@ -74,7 +77,7 @@ const ServicemanDashboard = () => {
       serviceType: "Room Cleaning",
       userName: "Priya Shah",
       userPhone: "+91 98765 43212",
-      location: "789, Green Valley, Piplod, Surat",
+      location: "789, Green Valley, Ahmedabad, Ahmedabad",
       date: getTodayDate(),
       time: "09:00 AM",
       status: "completed",
@@ -85,7 +88,7 @@ const ServicemanDashboard = () => {
       serviceType: "Electrician",
       userName: "Vikram Singh",
       userPhone: "+91 98765 43215",
-      location: "321, Tech Park, Vesu, Surat",
+      location: "321, Tech Park, Ahmedabad, Ahmedabad",
       date: getTodayDate(),
       time: "11:00 AM",
       status: "in-progress",
@@ -96,7 +99,7 @@ const ServicemanDashboard = () => {
       serviceType: "AC Repair",
       userName: "Amit Patel",
       userPhone: "+91 98765 43216",
-      location: "456, Business Park, Vesu, Surat",
+      location: "456, Business Park, Ahmedabad, Ahmedabad",
       date: getTodayDate(),
       time: "02:00 PM",
       status: "upcoming",
@@ -107,7 +110,7 @@ const ServicemanDashboard = () => {
       serviceType: "Plumbing",
       userName: "Rajesh Kumar",
       userPhone: "+91 98765 43217",
-      location: "123, Shanti Nagar, Adajan, Surat",
+      location: "123, Shanti Nagar, Ahmedabad, Ahmedabad",
       date: getTomorrowDate(),
       time: "10:00 AM",
       status: "upcoming",
@@ -118,7 +121,7 @@ const ServicemanDashboard = () => {
       serviceType: "Carpenter",
       userName: "Suresh Mehta",
       userPhone: "+91 98765 43218",
-      location: "555, Royal Apartments, Athwa, Surat",
+      location: "555, Royal Apartments, Ahmedabad, Ahmedabad",
       date: "2024-11-25",
       time: "03:00 PM",
       status: "upcoming",
@@ -129,8 +132,8 @@ const ServicemanDashboard = () => {
   const [billingTask, setBillingTask] = useState(null);
   const [extraProducts, setExtraProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({ name: "", price: "" });
-//   const [generatedBills, setGeneratedBills] = useState([]);
-//   const [billSendingStates, setBillSendingStates] = useState({});
+  //   const [generatedBills, setGeneratedBills] = useState([]);
+  //   const [billSendingStates, setBillSendingStates] = useState({});
 
   const [todayEarnings] = useState([
     {
@@ -183,7 +186,6 @@ const ServicemanDashboard = () => {
     setMyRoutine((prev) => [...prev, newTask]);
     setServiceRequests((prev) => prev.filter((r) => r.id !== requestId));
   };
- 
 
   const handleRejectRequest = (requestId) => {
     setServiceRequests(serviceRequests.filter((r) => r.id !== requestId));
@@ -294,6 +296,163 @@ const ServicemanDashboard = () => {
     return date === getTodayDate();
   };
 
+  // Add these state variables in your component (around line 100-150)
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: "Rajesh Kumar",
+    profession: "Electrician & AC Technician",
+    phone: "+91 98765 43210",
+    email: "rajesh.kumar@example.com",
+    experience: "8 years",
+    rating: 4.8,
+    reviews: 127,
+    photo: null,
+  });
+  const [editProfileData, setEditProfileData] = useState({ ...profileData });
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otpField, setOtpField] = useState(""); // 'phone' or 'email'
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [otpError, setOtpError] = useState("");
+
+  // Add these handler functions (after other handlers like handleSendBillToUser)
+  const handleEditProfile = () => {
+    setIsEditingProfile(true);
+    setEditProfileData({ ...profileData });
+  };
+
+  const handleCancelEditProfile = () => {
+    setIsEditingProfile(false);
+    setEditProfileData({ ...profileData });
+    setNewPhoneNumber("");
+    setNewEmail("");
+  };
+
+  const handleSaveProfile = () => {
+    setProfileData({ ...editProfileData });
+    setIsEditingProfile(false);
+    alert("Profile updated successfully!");
+  };
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditProfileData({ ...editProfileData, photo: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setEditProfileData({ ...editProfileData, photo: null });
+  };
+
+  const handlePhoneChange = (value) => {
+    setNewPhoneNumber(value);
+  };
+
+  const handleEmailChange = (value) => {
+    setNewEmail(value);
+  };
+
+  const handleSendOtp = (field) => {
+    setOtpField(field);
+    setOtp(["", "", "", "", "", ""]);
+    setOtpError("");
+    setShowOtpModal(true);
+
+    // Simulate sending OTP
+    if (field === "phone") {
+      alert(`OTP sent to ${newPhoneNumber}`);
+    } else {
+      alert(`OTP sent to ${newEmail}`);
+    }
+
+    // In real implementation, call your backend API here
+    // fetch('YOUR_BACKEND_URL/api/send-otp', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({
+    //     field: field,
+    //     value: field === 'phone' ? newPhoneNumber : newEmail
+    //   })
+    // });
+  };
+
+  const handleOtpChange = (index, value) => {
+    if (!/^\d*$/.test(value)) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    if (value && index < 5) {
+      document.getElementById(`profile-otp-${index + 1}`)?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      document.getElementById(`profile-otp-${index - 1}`)?.focus();
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    const otpString = otp.join("");
+    if (otpString.length !== 6) {
+      setOtpError("Please enter complete 6-digit OTP");
+      return;
+    }
+
+    setIsVerifyingOtp(true);
+    setOtpError("");
+
+    try {
+      // Simulate API call - replace with your actual backend call
+      // const response = await fetch('YOUR_BACKEND_URL/api/verify-otp', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({
+      //     field: otpField,
+      //     value: otpField === 'phone' ? newPhoneNumber : newEmail,
+      //     otp: otpString
+      //   })
+      // });
+
+      // Simulate successful verification
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      if (otpField === "phone") {
+        setEditProfileData({ ...editProfileData, phone: newPhoneNumber });
+        alert("Phone number verified and updated successfully!");
+      } else {
+        setEditProfileData({ ...editProfileData, email: newEmail });
+        alert("Email verified and updated successfully!");
+      }
+
+      setShowOtpModal(false);
+      setOtp(["", "", "", "", "", ""]);
+      setNewPhoneNumber("");
+      setNewEmail("");
+    } catch (err) {
+      setOtpError("Verification failed. Please try again.");
+    } finally {
+      setIsVerifyingOtp(false);
+    }
+  };
+
+  const handleCloseOtpModal = () => {
+    setShowOtpModal(false);
+    setOtp(["", "", "", "", "", ""]);
+    setOtpError("");
+    setNewPhoneNumber("");
+    setNewEmail("");
+  };
+
   const renderContent = () => {
     switch (activeMenu) {
       case "requests":
@@ -375,8 +534,8 @@ const ServicemanDashboard = () => {
           </div>
         );
 
-      case "routine":
-        { const filteredTasks = getFilteredRoutine();
+      case "routine": {
+        const filteredTasks = getFilteredRoutine();
         return (
           <div>
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
@@ -598,7 +757,8 @@ const ServicemanDashboard = () => {
               </div>
             )}
           </div>
-        ); }
+        );
+      }
 
       case "billing":
         return (
@@ -626,6 +786,24 @@ const ServicemanDashboard = () => {
                       <span className="text-gray-600">Service:</span>
                       <span className="font-semibold text-gray-800">
                         {billingTask.serviceType}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Service ID:</span>
+                      <span className="font-semibold text-gray-800">
+                        {billingTask.id}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Service Date</span>
+                      <span className="font-semibold text-gray-800">
+                        {billingTask.date}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Service Status</span>
+                      <span className="font-semibold text-gray-800">
+                        {billingTask.status}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
@@ -749,8 +927,8 @@ const ServicemanDashboard = () => {
           </div>
         );
 
-      case "earnings":
-        { const todayTotal = todayEarnings.reduce((sum, e) => sum + e.amount, 0);
+      case "earnings": {
+        const todayTotal = todayEarnings.reduce((sum, e) => sum + e.amount, 0);
         return (
           <div>
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
@@ -809,7 +987,8 @@ const ServicemanDashboard = () => {
               </div>
             </div>
           </div>
-        ); }
+        );
+      }
 
       case "history":
         return (
@@ -898,46 +1077,324 @@ const ServicemanDashboard = () => {
       case "profile":
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Profile</h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">Profile</h2>
+              {!isEditingProfile && (
+                <button
+                  onClick={handleEditProfile}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2"
+                >
+                  <Edit size={18} />
+                  Edit Profile
+                </button>
+              )}
+            </div>
+
             <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center">
-                  <User size={40} className="text-white" />
+              {/* Profile Photo Section */}
+              <div className="flex flex-col items-center mb-6">
+                <div className="relative">
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center overflow-hidden shadow-lg">
+                    {(
+                      isEditingProfile
+                        ? editProfileData.photo
+                        : profileData.photo
+                    ) ? (
+                      <img
+                        src={
+                          isEditingProfile
+                            ? editProfileData.photo
+                            : profileData.photo
+                        }
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <User size={64} className="text-white" />
+                    )}
+                  </div>
+                  {isEditingProfile && (
+                    <div className="absolute bottom-0 right-0">
+                      <label className="w-10 h-10 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-colors">
+                        <Camera size={20} className="text-white" />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handlePhotoUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-800">
-                    Rajesh Kumar
-                  </h3>
-                  <p className="text-gray-600">Electrician & AC Technician</p>
-                </div>
+                {isEditingProfile && editProfileData.photo && (
+                  <button
+                    onClick={handleRemovePhoto}
+                    className="mt-2 text-sm text-red-600 hover:text-red-700 font-medium"
+                  >
+                    Remove Photo
+                  </button>
+                )}
               </div>
-              <div className="space-y-3">
+
+              {/* Profile Information */}
+              <div className="space-y-4">
+                {/* Name */}
                 <div>
-                  <label className="text-sm font-semibold text-gray-700">
-                    Phone
+                  <label className="text-sm font-semibold text-gray-700 block mb-2">
+                    Full Name
                   </label>
-                  <p className="text-gray-800">+91 98765 43210</p>
+                  {isEditingProfile ? (
+                    <input
+                      type="text"
+                      value={editProfileData.name}
+                      onChange={(e) =>
+                        setEditProfileData({
+                          ...editProfileData,
+                          name: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  ) : (
+                    <p className="text-gray-800 text-lg">{profileData.name}</p>
+                  )}
                 </div>
+
+                {/* Profession */}
                 <div>
-                  <label className="text-sm font-semibold text-gray-700">
-                    Email
+                  <label className="text-sm font-semibold text-gray-700 block mb-2">
+                    Profession
                   </label>
-                  <p className="text-gray-800">rajesh.kumar@example.com</p>
+                  {isEditingProfile ? (
+                    <input
+                      type="text"
+                      value={editProfileData.profession}
+                      onChange={(e) =>
+                        setEditProfileData({
+                          ...editProfileData,
+                          profession: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  ) : (
+                    <p className="text-gray-600">{profileData.profession}</p>
+                  )}
                 </div>
+
+                {/* Phone */}
                 <div>
-                  <label className="text-sm font-semibold text-gray-700">
+                  <label className="text-sm font-semibold text-gray-700 block mb-2">
+                    Phone Number
+                  </label>
+                  {isEditingProfile ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="tel"
+                          value={editProfileData.phone}
+                          readOnly
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed outline-none"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="tel"
+                          value={newPhoneNumber}
+                          onChange={(e) => handlePhoneChange(e.target.value)}
+                          placeholder="Enter new phone number"
+                          maxLength="10"
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        />
+                        <button
+                          onClick={() => handleSendOtp("phone")}
+                          disabled={
+                            !newPhoneNumber || newPhoneNumber.length !== 10
+                          }
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Verify
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        Current phone will remain until new number is verified
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-gray-800">{profileData.phone}</p>
+                  )}
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label className="text-sm font-semibold text-gray-700 block mb-2">
+                    Email Address
+                  </label>
+                  {isEditingProfile ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="email"
+                          value={editProfileData.email}
+                          readOnly
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed outline-none"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="email"
+                          value={newEmail}
+                          onChange={(e) => handleEmailChange(e.target.value)}
+                          placeholder="Enter new email address"
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        />
+                        <button
+                          onClick={() => handleSendOtp("email")}
+                          disabled={
+                            !newEmail ||
+                            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)
+                          }
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Verify
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        Current email will remain until new email is verified
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-gray-800">{profileData.email}</p>
+                  )}
+                </div>
+
+                {/* Experience */}
+                <div>
+                  <label className="text-sm font-semibold text-gray-700 block mb-2">
                     Experience
                   </label>
-                  <p className="text-gray-800">8 years</p>
+                  {isEditingProfile ? (
+                    <input
+                      type="text"
+                      value={editProfileData.experience}
+                      onChange={(e) =>
+                        setEditProfileData({
+                          ...editProfileData,
+                          experience: e.target.value,
+                        })
+                      }
+                      placeholder="e.g., 8 years"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  ) : (
+                    <p className="text-gray-800">{profileData.experience}</p>
+                  )}
                 </div>
+
+                {/* Rating (Read-only) */}
                 <div>
-                  <label className="text-sm font-semibold text-gray-700">
+                  <label className="text-sm font-semibold text-gray-700 block mb-2">
                     Rating
                   </label>
-                  <p className="text-gray-800">4.8 ⭐ (127 reviews)</p>
+                  <p className="text-gray-800">
+                    {profileData.rating} ⭐ ({profileData.reviews} reviews)
+                  </p>
                 </div>
               </div>
+
+              {/* Action Buttons for Edit Mode */}
+              {isEditingProfile && (
+                <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+                  <button
+                    onClick={handleSaveProfile}
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Save size={18} />
+                    Save Changes
+                  </button>
+                  <button
+                    onClick={handleCancelEditProfile}
+                    className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                  >
+                    <X size={18} />
+                    Cancel
+                  </button>
+                </div>
+              )}
             </div>
+
+            {/* OTP Verification Modal */}
+            {showOtpModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
+                  <button
+                    onClick={handleCloseOtpModal}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                  >
+                    <X size={24} />
+                  </button>
+
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Phone size={32} className="text-white" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-800">
+                      Verify OTP
+                    </h2>
+                    <p className="text-gray-500 mt-2">
+                      Enter the 6-digit code sent to
+                    </p>
+                    <p className="text-blue-600 font-semibold">
+                      {otpField === "phone" ? newPhoneNumber : newEmail}
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex justify-center gap-2">
+                      {otp.map((digit, index) => (
+                        <input
+                          key={index}
+                          id={`profile-otp-${index}`}
+                          type="text"
+                          maxLength="1"
+                          value={digit}
+                          onChange={(e) =>
+                            handleOtpChange(index, e.target.value)
+                          }
+                          onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                          className="w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        />
+                      ))}
+                    </div>
+
+                    {otpError && (
+                      <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm text-center">
+                        {otpError}
+                      </div>
+                    )}
+
+                    <button
+                      onClick={handleVerifyOtp}
+                      disabled={isVerifyingOtp}
+                      className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 rounded-lg transition-all shadow-lg hover:shadow-xl disabled:opacity-50"
+                    >
+                      {isVerifyingOtp ? "Verifying..." : "Verify & Update"}
+                    </button>
+                  </div>
+
+                  <p className="text-center text-sm text-gray-500 mt-4">
+                    Didn't receive OTP?{" "}
+                    <button
+                      onClick={() => handleSendOtp(otpField)}
+                      className="text-blue-600 font-semibold hover:underline"
+                    >
+                      Resend
+                    </button>
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         );
 

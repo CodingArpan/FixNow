@@ -49,7 +49,7 @@ const UserTransactions = () => {
       ],
       tax: 50,
       discount: 0,
-      address: "123, Shanti Nagar, Adajan, Surat - 395009",
+      address: "123, Shanti Nagar, Ahmedabad, Ahmedabad - 395009",
     },
     {
       id: "TXN002",
@@ -73,7 +73,7 @@ const UserTransactions = () => {
       ],
       tax: 35,
       discount: 35,
-      address: "789, Green Valley, Piplod, Surat - 395010",
+      address: "789, Green Valley, Ahmedabad, Ahmedabad - 395010",
     },
     {
       id: "TXN003",
@@ -94,7 +94,7 @@ const UserTransactions = () => {
       ],
       tax: 45,
       discount: 45,
-      address: "456, Business Park, Vesu, Surat - 395007",
+      address: "456, Business Park, Ahmedabad, Ahmedabad - 395007",
     },
     {
       id: "TXN004",
@@ -117,7 +117,7 @@ const UserTransactions = () => {
       ],
       tax: 55,
       discount: 55,
-      address: "321, Tech Park, Vesu, Surat - 395007",
+      address: "321, Tech Park, Ahmedabad, Ahmedabad - 395007",
     },
     {
       id: "TXN005",
@@ -140,7 +140,7 @@ const UserTransactions = () => {
       ],
       tax: 80,
       discount: 80,
-      address: "555, Royal Apartments, Athwa, Surat - 395001",
+      address: "555, Royal Apartments, Ahmedabad, Ahmedabad - 395001",
     },
   ];
 

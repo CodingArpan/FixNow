@@ -34,8 +34,8 @@ const UserProfile = () => {
         id: 1,
         type: "Home",
         street: "123, Shanti Nagar",
-        area: "Adajan",
-        city: "Surat",
+        area: "Ahmedabad",
+        city: "Ahmedabad",
         state: "Gujarat",
         pincode: "395009",
         isDefault: true,
@@ -44,8 +44,8 @@ const UserProfile = () => {
         id: 2,
         type: "Work",
         street: "456, Business Park",
-        area: "Vesu",
-        city: "Surat",
+        area: "Ahmedabad",
+        city: "Ahmedabad",
         state: "Gujarat",
         pincode: "395007",
         isDefault: false,
@@ -232,11 +232,11 @@ const UserProfile = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <Link to="/" className="cursor-pointer" >
-          <button className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-4">
-            <ArrowLeft size={20} />
-            <span className="font-medium">Back to Dashboard</span>
-          </button>
+          <Link to="/" className="cursor-pointer">
+            <button className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-4">
+              <ArrowLeft size={20} />
+              <span className="font-medium">Back to Dashboard</span>
+            </button>
           </Link>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
             Profile Management

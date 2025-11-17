@@ -91,7 +91,7 @@ const UserDashboard = () => {
       services: ["Electrician", "AC Repair"],
       experience: "8 years",
       price: 500,
-      location: "Adajan",
+      location: "Ahmedabad",
       phone: "+91 98765 43210",
       available: true,
     },
@@ -104,7 +104,7 @@ const UserDashboard = () => {
       services: ["Plumber", "Bathroom Cleaning"],
       experience: "12 years",
       price: 450,
-      location: "Vesu",
+      location: "Ahmedabad",
       phone: "+91 98765 43211",
       available: true,
     },
@@ -117,7 +117,7 @@ const UserDashboard = () => {
       services: ["Room Cleaning", "Kitchen Cleaning", "Deep Cleaning"],
       experience: "5 years",
       price: 350,
-      location: "Piplod",
+      location: "Ahmedabad",
       phone: "+91 98765 43212",
       available: true,
     },
@@ -130,7 +130,7 @@ const UserDashboard = () => {
       services: ["Carpenter", "Painter"],
       experience: "15 years",
       price: 600,
-      location: "Athwa",
+      location: "Ahmedabad",
       phone: "+91 98765 43213",
       available: false,
     },
@@ -143,7 +143,7 @@ const UserDashboard = () => {
       services: ["Laundry Service", "Window Cleaning"],
       experience: "6 years",
       price: 300,
-      location: "Adajan",
+      location: "Ahmedabad",
       phone: "+91 98765 43214",
       available: true,
     },
@@ -156,7 +156,7 @@ const UserDashboard = () => {
       services: ["Rooftop Cleaning", "Garden Maintenance"],
       experience: "7 years",
       price: 550,
-      location: "Vesu",
+      location: "Ahmedabad",
       phone: "+91 98765 43215",
       available: true,
     },
@@ -169,7 +169,7 @@ const UserDashboard = () => {
       services: ["Pest Control", "Disinfection Service"],
       experience: "9 years",
       price: 700,
-      location: "Piplod",
+      location: "Ahmedabad",
       phone: "+91 98765 43216",
       available: true,
     },
@@ -182,7 +182,7 @@ const UserDashboard = () => {
       services: ["Appliance Repair", "AC Repair"],
       experience: "11 years",
       price: 650,
-      location: "Athwa",
+      location: "Ahmedabad",
       phone: "+91 98765 43217",
       available: true,
     },
@@ -424,42 +424,42 @@ const UserDashboard = () => {
                     </div>
 
                     <Link to="/user-profile">
-                    <button
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        alert("Profile page - Coming soon!");
-                      }}
-                      className="w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors flex items-center gap-3 text-gray-700"
-                    >
-                      <UserCircle size={18} className="text-blue-600" />
-                      <span>My Profile</span>
-                    </button>
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          alert("Profile page - Coming soon!");
+                        }}
+                        className="w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors flex items-center gap-3 text-gray-700"
+                      >
+                        <UserCircle size={18} className="text-blue-600" />
+                        <span>My Profile</span>
+                      </button>
                     </Link>
 
                     <Link to="/user-orders">
-                    <button
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        alert("Settings page - Coming soon!");
-                      }}
-                      className="w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors flex items-center gap-3 text-gray-700"
-                    >
-                      <Settings size={18} className="text-blue-600" />
-                      <span>Orders</span>
-                    </button>
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          alert("Settings page - Coming soon!");
+                        }}
+                        className="w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors flex items-center gap-3 text-gray-700"
+                      >
+                        <Settings size={18} className="text-blue-600" />
+                        <span>Orders</span>
+                      </button>
                     </Link>
 
                     <Link to="/user-transactions">
-                    <button
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        alert("Settings page - Coming soon!");
-                      }}
-                      className="w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors flex items-center gap-3 text-gray-700"
-                    >
-                      <Settings size={18} className="text-blue-600" />
-                      <span>Transactions</span>
-                    </button>
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          alert("Settings page - Coming soon!");
+                        }}
+                        className="w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors flex items-center gap-3 text-gray-700"
+                      >
+                        <Settings size={18} className="text-blue-600" />
+                        <span>Transactions</span>
+                      </button>
                     </Link>
 
                     <div className="border-t border-gray-100">
